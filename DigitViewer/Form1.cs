@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using MLP_approximation;
 
@@ -8,7 +10,7 @@ namespace DigitViewer
 {
     public partial class Form1 : Form
     {
-        private double[,] trainData;
+        private static List<Digit> digits;
         private DigitImage[] trainImages;
         public Form1()
         {
@@ -36,19 +38,24 @@ namespace DigitViewer
             magic2 = ReverseBytes(magic2);
             int numLabels = brLabels.ReadInt32();
             numLabels = ReverseBytes(numLabels);
+
+            digits = new List<Digit>();
             for (int di = 0; di < imageCount; ++di)
             {
+                var digit = new Digit();
                 for (int i = 0; i < 28; ++i) // get 28x28 pixel values
                 {
                     for (int j = 0; j < 28; ++j)
                     {
                         byte b = brImages.ReadByte();
                         pixels[i][j] = b;
+                        digit.pixels[i, j] = b > 1;
                     }
                 }
                 byte lbl = brLabels.ReadByte(); // get the label
-                DigitImage dImage = new DigitImage(28, 28, pixels, lbl);
+                var dImage = new DigitImage(28, 28, pixels, lbl);
                 result[di] = dImage;
+                digits.Add(digit);
             } // Each image
             ifsPixels.Close();
             brImages.Close();
@@ -68,19 +75,15 @@ namespace DigitViewer
         {
             var openFileDialogTrain = new OpenFileDialog();
             if (openFileDialogTrain.ShowDialog() != DialogResult.OK) return;
-            var numberOfInputs = 784;
-            trainData = new double[60, numberOfInputs + 1];
             string pixelFile = openFileDialogTrain.FileName;
             string labelFile = Path.GetDirectoryName(pixelFile) + @"\train-labels.idx1-ubyte";
             trainImages = LoadMnistData(pixelFile, labelFile);
-
             Display(0);
         }
 
         private void Display(int index)
         {
             if (trainImages == null || index >= trainImages.Length) return;
-            var image = trainImages[index];
             var size = 14;
             var justMade = false;
             if (Holder.Controls.Count == 0)
@@ -90,13 +93,11 @@ namespace DigitViewer
                 Holder.RowCount = 28;
                 justMade = true;
             }
-            for (int j = 0; j < image.pixels.Length; j++)
+            var digit = digits[index];
+            for (int j = 0; j < 28; j++)
             {
-                var pixel = image.pixels[j];
-                for (int i = 0; i < pixel.Length; i++)
+                for (int i = 0; i < 28; i++)
                 {
-                    var bytes = pixel[i];
-
                     var pb = justMade
                         ? new PictureBox
                           {
@@ -104,13 +105,27 @@ namespace DigitViewer
                               Height = size
                           }
                         : Holder.Controls[i * 28 + j];
+                    pb.MouseHover += pb_MouseHover;
 
-                    pb.BackColor = bytes > 0 ? Color.Black : Color.White;
+                    pb.BackColor = digit.pixels[j, i] ? Color.Black : Color.White;
                     if (justMade) Holder.Controls.Add(pb, j, i);
                     else pb.Update();
                 }
             }
+            var attributes = new List<int>();
+            Processing.MinMax(digits[index], attributes);
+            MinMaxX.Text = "Min X: " + attributes[0] + " Max X: " + attributes[1];
+            MinMaxY.Text = "Min Y: " + attributes[2] + " Max Y: " + attributes[3];
             Holder.Update();
+        }
+
+        void pb_MouseHover(object sender, EventArgs eventArgs)
+        {
+            var obj = (sender as PictureBox);
+            var index = Holder.Controls.GetChildIndex(obj);
+            var x = index / 28;
+            var y = index % 28;
+            Cords.Text = x + " " + y;
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
