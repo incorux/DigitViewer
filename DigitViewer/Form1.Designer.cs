@@ -34,6 +34,10 @@
             this.Cords = new System.Windows.Forms.Label();
             this.MinMaxX = new System.Windows.Forms.Label();
             this.MinMaxY = new System.Windows.Forms.Label();
+            this.NorthLabel = new System.Windows.Forms.Label();
+            this.EastLabel = new System.Windows.Forms.Label();
+            this.WestLabel = new System.Windows.Forms.Label();
+            this.SouthLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,11 +101,51 @@
             this.MinMaxY.TabIndex = 5;
             this.MinMaxY.Text = "Minimum and maximum Y";
             // 
+            // NorthLabel
+            // 
+            this.NorthLabel.AutoSize = true;
+            this.NorthLabel.Location = new System.Drawing.Point(566, 124);
+            this.NorthLabel.Name = "NorthLabel";
+            this.NorthLabel.Size = new System.Drawing.Size(33, 13);
+            this.NorthLabel.TabIndex = 6;
+            this.NorthLabel.Text = "North";
+            // 
+            // EastLabel
+            // 
+            this.EastLabel.AutoSize = true;
+            this.EastLabel.Location = new System.Drawing.Point(642, 124);
+            this.EastLabel.Name = "EastLabel";
+            this.EastLabel.Size = new System.Drawing.Size(28, 13);
+            this.EastLabel.TabIndex = 7;
+            this.EastLabel.Text = "East";
+            // 
+            // WestLabel
+            // 
+            this.WestLabel.AutoSize = true;
+            this.WestLabel.Location = new System.Drawing.Point(566, 147);
+            this.WestLabel.Name = "WestLabel";
+            this.WestLabel.Size = new System.Drawing.Size(32, 13);
+            this.WestLabel.TabIndex = 8;
+            this.WestLabel.Text = "West";
+            // 
+            // SouthLabel
+            // 
+            this.SouthLabel.AutoSize = true;
+            this.SouthLabel.Location = new System.Drawing.Point(642, 147);
+            this.SouthLabel.Name = "SouthLabel";
+            this.SouthLabel.Size = new System.Drawing.Size(35, 13);
+            this.SouthLabel.TabIndex = 9;
+            this.SouthLabel.Text = "South";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 566);
+            this.Controls.Add(this.SouthLabel);
+            this.Controls.Add(this.WestLabel);
+            this.Controls.Add(this.EastLabel);
+            this.Controls.Add(this.NorthLabel);
             this.Controls.Add(this.MinMaxY);
             this.Controls.Add(this.MinMaxX);
             this.Controls.Add(this.Cords);
@@ -124,6 +168,10 @@
         private System.Windows.Forms.Label Cords;
         private System.Windows.Forms.Label MinMaxX;
         private System.Windows.Forms.Label MinMaxY;
+        private System.Windows.Forms.Label NorthLabel;
+        private System.Windows.Forms.Label EastLabel;
+        private System.Windows.Forms.Label WestLabel;
+        private System.Windows.Forms.Label SouthLabel;
     }
 }
 

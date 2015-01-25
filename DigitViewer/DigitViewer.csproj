@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Digit.cs" />
+    <Compile Include="DigitAttributes.cs" />
     <Compile Include="DigitImage.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

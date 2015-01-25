@@ -104,19 +104,27 @@ namespace DigitViewer
                               Width = size,
                               Height = size
                           }
-                        : Holder.Controls[i * 28 + j];
-                    pb.MouseHover += pb_MouseHover;
+                        : Holder.Controls[j * 28 + i];
+                    if(justMade) pb.MouseHover += pb_MouseHover;
 
-                    pb.BackColor = digit.pixels[j, i] ? Color.Black : Color.White;
+                    pb.BackColor = digit.pixels[i, j] ? Color.Black : Color.White;
                     if (justMade) Holder.Controls.Add(pb, j, i);
                     else pb.Update();
                 }
             }
-            var attributes = new List<int>();
-            Processing.MinMax(digits[index], attributes);
-            MinMaxX.Text = "Min X: " + attributes[0] + " Max X: " + attributes[1];
-            MinMaxY.Text = "Min Y: " + attributes[2] + " Max Y: " + attributes[3];
+            FillLabels(digit);
             Holder.Update();
+        }
+
+        private void FillLabels(Digit digit)
+        {
+            Processing.ProcessAll(digit);
+            MinMaxX.Text = "Min X: " + Processing.Attributes.MinX + " Max X: " + Processing.Attributes.MaxX;
+            MinMaxY.Text = "Min Y: " + Processing.Attributes.MinY + " Max Y: " + Processing.Attributes.MaxY;
+            NorthLabel.Text = Processing.Attributes.North.ToString();
+            SouthLabel.Text = Processing.Attributes.South.ToString();
+            EastLabel.Text = Processing.Attributes.East.ToString();
+            WestLabel.Text = Processing.Attributes.West.ToString();
         }
 
         void pb_MouseHover(object sender, EventArgs eventArgs)
