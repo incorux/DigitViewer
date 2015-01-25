@@ -13,6 +13,7 @@ namespace DigitViewer
         public double TopLeftToBotRight;
         public double TopRightToBotLeft;
         public Point North, West, South, East;
+        public int Euler4, Euler8;
 
         public List<int> ToList()
         {

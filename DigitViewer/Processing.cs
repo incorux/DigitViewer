@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Security.Policy;
+using System.Linq;
 
 namespace DigitViewer
 {
@@ -15,6 +15,7 @@ namespace DigitViewer
             MinMax(digit);
             Extremes(digit);
             DistanceVariable(digit);
+            Euler(digit);
         }
         /// <summary>
         /// Finds minimal x,y and maximum x,y
@@ -68,6 +69,7 @@ namespace DigitViewer
             Attributes.MinY = minY;
             Attributes.MaxY = maxY;
         }
+        #region Extremes
         public static void Extremes(Digit digit)
         {
             var north = Attributes.MinY;
@@ -130,6 +132,8 @@ namespace DigitViewer
             Attributes.West = westPoint;
             Attributes.East = eastPoint;
         }
+        #endregion
+        #region DistanceVariable
         public static void DistanceVariable(Digit digit)
         {
             var pixels = digit.pixels;
@@ -226,5 +230,180 @@ namespace DigitViewer
             Attributes.TopLeftToBotRight = TopLeftToBotRight;
             Attributes.TopRightToBotLeft = TopRightToBotLeft;
         }
+        #endregion
+        #region Euler
+        public static void Euler(Digit digit)
+        {
+            double eulerNumber4 = 0.0;
+            double eulerNumber8 = 0.0;
+            bool[,] pixels = digit.pixels;
+
+            bool[,] S1 = setS1();
+            bool[,] S3 = setS3();
+            bool[,] X = setX();
+
+            int numOfS1 = 0;
+            int numOfS3 = 0;
+            int numOfX = 0;
+
+
+            for (int i = 0; i < 28; i++)
+            {
+                for (int j = 0; j < 28; j++)
+                {
+                    if (pixels[i, j] == true)
+                    {
+                        bool[,] pxlneigbors = GetNeighbours(i, j, pixels);
+
+                        for (int k = 1; k <= 4; k++)
+                        {
+                            var subset = SubsetNeigbours(k, pxlneigbors);
+                            for (int index = 0; index <= 3; index++)
+                            {
+                                bool[] rowS1 = GetRow(S1, index);
+                                bool[] rowS3 = GetRow(S3, index);
+
+                                if (subset.SequenceEqual(rowS1)) numOfS1++;
+                                if (subset.SequenceEqual(rowS3)) numOfS3++;
+
+                            }
+
+                            for (int index = 0; index < 2; index++)
+                            {
+                                bool[] rowX = GetRow(X, index);
+                                if (subset.SequenceEqual(rowX)) numOfX++;
+
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            eulerNumber4 = 0.25 * (numOfS1 - numOfS3 + 2 * numOfX);
+            eulerNumber8 = 0.25 * (numOfS1 - numOfS3 - 2 * numOfX);
+
+            Attributes.Euler4 = Convert.ToInt32(eulerNumber4);
+            Attributes.Euler8 = Convert.ToInt32(eulerNumber8);
+        }
+
+        private static bool[,] GetNeighbours(int i, int j, bool[,] pixels)
+        {
+
+            var neigbours = new bool[3, 3];
+
+            if (i > 0 && j < 27) neigbours[0, 2] = (pixels[i - 1, j + 1]);
+            if (i > 0) neigbours[0, 1] = (pixels[i - 1, j]);
+            if (i > 0 && j > 0) neigbours[0, 0] = (pixels[i - 1, j - 1]);
+
+            if (j < 27) neigbours[1, 2] = (pixels[i, j + 1]);
+            neigbours[1, 1] = (pixels[i, j]);
+            if (j > 0) neigbours[1, 0] = (pixels[i, j - 1]);
+
+
+            if (i < 27 && j < 27) neigbours[2, 2] = (pixels[i + 1, j + 1]);
+            if (i < 27) neigbours[2, 1] = (pixels[i + 1, j]);
+            if (i < 27 && j > 0) neigbours[2, 0] = (pixels[i + 1, j - 1]);
+
+            return neigbours;
+        }
+
+        private static bool[,] setS1()
+        {
+            var S1 = new[,]
+            {
+                {true, false, false, false},
+                {false, true, false, false},
+                {false, false, true, false},
+                {false, false, false, true},
+            };
+            return S1;
+        }
+
+        private static bool[,] setS3()
+        {
+            var S3 = new[,]
+            {
+                {false, true, true, true},
+                {true, false, true, true},
+                {true, true, false, true},
+                {true, true, true, false},
+            };
+            return S3;
+        }
+
+        private static bool[,] setX()
+        {
+            var X = new[,]
+            {
+                {false, true, true, false},
+                {true, false, false, true},
+            };
+            return X;
+        }
+        private static bool[] SubsetNeigbours(int type, bool[,] pxlneigbors)
+        {
+            var neighbours = new bool[4];
+
+
+            switch (type)
+            {
+                case 1:
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                        {
+                            if (i > 0 && j < 2) neighbours[0] = pxlneigbors[i - 1, j + 1];
+                            if (j < 2) neighbours[1] = pxlneigbors[i, j + 1];
+                            if (i > 0) neighbours[2] = pxlneigbors[i - 1, j];
+                            neighbours[3] = pxlneigbors[i, j];
+                        }
+                    break;
+                case 2:
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                        {
+                            if (j < 2) neighbours[0] = pxlneigbors[i, j + 1];
+                            if (i < 2 && j < 2) neighbours[1] = pxlneigbors[i + 1, j + 1];
+                            neighbours[2] = pxlneigbors[i, j];
+                            if (i < 2 && j > 0) neighbours[3] = pxlneigbors[i + 1, j - 1];
+
+                        }
+                    break;
+                case 3:
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                        {
+                            if (i > 0) neighbours[0] = pxlneigbors[i - 1, j];
+                            neighbours[1] = pxlneigbors[i, j];
+                            if (i > 0 && j > 0) neighbours[2] = pxlneigbors[i - 1, j - 1];
+                            if (j > 0) neighbours[3] = pxlneigbors[i, j - 1];
+
+                        }
+                    break;
+                case 4:
+                    for (int i = 0; i < 3; i++)
+                        for (int j = 0; j < 3; j++)
+                        {
+                            neighbours[0] = pxlneigbors[i, j];
+                            if (i < 2) neighbours[1] = pxlneigbors[i + 1, j];
+                            if (j > 0) neighbours[2] = pxlneigbors[i, j - 1];
+                            if (i < 2 && j > 0) neighbours[3] = pxlneigbors[i + 1, j - 1];
+
+                        }
+                    break;
+
+            }
+
+            return neighbours;
+        }
+        public static T[] GetRow<T>(T[,] matrix, int row)
+        {
+            var columns = matrix.GetLength(1);
+            var array = new T[columns];
+            for (int i = 0; i < columns; ++i)
+                array[i] = matrix[row, i];
+            return array;
+        }
+        #endregion
     }
 }

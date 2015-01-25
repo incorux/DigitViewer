@@ -38,6 +38,8 @@
             this.EastLabel = new System.Windows.Forms.Label();
             this.WestLabel = new System.Windows.Forms.Label();
             this.SouthLabel = new System.Windows.Forms.Label();
+            this.Euler4Label = new System.Windows.Forms.Label();
+            this.Euler8Label = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -137,11 +139,31 @@
             this.SouthLabel.TabIndex = 9;
             this.SouthLabel.Text = "South";
             // 
+            // Euler4Label
+            // 
+            this.Euler4Label.AutoSize = true;
+            this.Euler4Label.Location = new System.Drawing.Point(566, 171);
+            this.Euler4Label.Name = "Euler4Label";
+            this.Euler4Label.Size = new System.Drawing.Size(37, 13);
+            this.Euler4Label.TabIndex = 10;
+            this.Euler4Label.Text = "Euler4";
+            // 
+            // Euler8Label
+            // 
+            this.Euler8Label.AutoSize = true;
+            this.Euler8Label.Location = new System.Drawing.Point(642, 171);
+            this.Euler8Label.Name = "Euler8Label";
+            this.Euler8Label.Size = new System.Drawing.Size(37, 13);
+            this.Euler8Label.TabIndex = 11;
+            this.Euler8Label.Text = "Euler8";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 566);
+            this.Controls.Add(this.Euler8Label);
+            this.Controls.Add(this.Euler4Label);
             this.Controls.Add(this.SouthLabel);
             this.Controls.Add(this.WestLabel);
             this.Controls.Add(this.EastLabel);
@@ -172,6 +194,8 @@
         private System.Windows.Forms.Label EastLabel;
         private System.Windows.Forms.Label WestLabel;
         private System.Windows.Forms.Label SouthLabel;
+        private System.Windows.Forms.Label Euler4Label;
+        private System.Windows.Forms.Label Euler8Label;
     }
 }
 

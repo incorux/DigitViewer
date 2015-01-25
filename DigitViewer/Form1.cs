@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Windows.Forms;
 using MLP_approximation;
 
@@ -125,6 +124,8 @@ namespace DigitViewer
             SouthLabel.Text = Processing.Attributes.South.ToString();
             EastLabel.Text = Processing.Attributes.East.ToString();
             WestLabel.Text = Processing.Attributes.West.ToString();
+            Euler4Label.Text = Processing.Attributes.Euler4.ToString();
+            Euler8Label.Text = Processing.Attributes.Euler8.ToString();
         }
 
         void pb_MouseHover(object sender, EventArgs eventArgs)
