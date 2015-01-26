@@ -107,6 +107,14 @@ namespace DigitViewer
                     if(justMade) pb.MouseHover += pb_MouseHover;
 
                     pb.BackColor = digit.pixels[i, j] ? Color.Black : Color.White;
+                    if ((i+4)%7 == 0)
+                    {
+                        pb.BackColor = digit.pixels[i, j] ? Color.DarkRed : Color.LightGray;
+                    }
+                    if ((j + 4) % 7 == 0)
+                    {
+                        pb.BackColor = digit.pixels[i, j] ? Color.DarkRed : Color.LightGray;
+                    }
                     if (justMade) Holder.Controls.Add(pb, j, i);
                     else pb.Update();
                 }
@@ -126,6 +134,9 @@ namespace DigitViewer
             WestLabel.Text = Processing.Attributes.West.ToString();
             Euler4Label.Text = Processing.Attributes.Euler4.ToString();
             Euler8Label.Text = Processing.Attributes.Euler8.ToString();
+            HorizontalsVal.Text = Processing.Attributes.HorizontalIntersections.ToString();
+            VerticalsVal.Text = Processing.Attributes.VerticalIntersections.ToString();
+            TotalIntersectionsVal.Text = Processing.Attributes.TotalIntersections.ToString();
         }
 
         void pb_MouseHover(object sender, EventArgs eventArgs)
