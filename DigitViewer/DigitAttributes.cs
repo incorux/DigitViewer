@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace DigitViewer
@@ -14,6 +13,8 @@ namespace DigitViewer
         public double TopRightToBotLeft;
         public Point North, West, South, East;
         public int Euler4, Euler8;
+        public int HorizontalIntersections;
+        public int VerticalIntersections;
 
         public List<int> ToList()
         {
@@ -23,6 +24,12 @@ namespace DigitViewer
                 North.X, North.Y, East.X, East.Y, South.X, South.Y, West.X, West.Y
             });
             return list;
+        }
+
+        public double TotalIntersections
+        {
+            get { return VerticalIntersections + HorizontalIntersections; }
+
         }
     }
 }
