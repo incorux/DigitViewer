@@ -8,10 +8,11 @@ namespace DigitViewer
     static class Processing
     {
         public static DigitAttributes Attributes;
-
-        public static void ProcessAll(Digit digit)
+        private static int index;
+        public static void ProcessAll(Digit digit, int i)
         {
             Attributes = new DigitAttributes();
+            index = i;
             MinMax(digit);
             Extremes(digit);
             DistanceVariable(digit);
@@ -259,19 +260,19 @@ namespace DigitViewer
                     gotTopRight = true;
                 }
                 // BOTLEFT
-                if (!gotBotLeft && pixels[botLeft.Y - i, botLeft.X + i])
+                if (botLeft.X + i < 28 && !gotBotLeft && pixels[botLeft.Y - i, botLeft.X + i])
                 {
                     botLeft.Y -= i;
                     botLeft.X += i;
                     gotBotLeft = true;
                 }
-                if (!gotBotLeft && pixels[botLeft.Y - i - 1, botLeft.X + i])
+                if (botLeft.X + i < 28 && !gotBotLeft && pixels[botLeft.Y - i - 1, botLeft.X + i])
                 {
                     botLeft.Y -= i + 1;
                     botLeft.X += i;
                     gotBotLeft = true;
                 }
-                if (!gotBotLeft && pixels[botLeft.Y - i, botLeft.X + i + 1])
+                if (botLeft.X + i + 1 < 28 && !gotBotLeft && pixels[botLeft.Y - i, botLeft.X + i + 1])
                 {
                     botLeft.Y -= i;
                     botLeft.X += i + 1;

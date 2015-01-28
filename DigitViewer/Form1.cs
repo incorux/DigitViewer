@@ -75,19 +75,21 @@ namespace DigitViewer
         {
             var openFileDialogTrain = new OpenFileDialog();
             if (openFileDialogTrain.ShowDialog() != DialogResult.OK) return;
-            string pixelFile = openFileDialogTrain.FileName;
-            string labelFile = Path.GetDirectoryName(pixelFile) + @"\train-labels.idx1-ubyte";
+            var pixelFile = openFileDialogTrain.FileName;
+            var labelFile = Path.GetDirectoryName(pixelFile) + @"\train-labels.idx1-ubyte";
             trainImages = LoadMnistData(pixelFile, labelFile);
 
+            var i = 0;
             using (TextWriter processedWriter = new StreamWriter(Directory.GetCurrentDirectory() + @"\\processedData.csv"))
             {
                 foreach (var digit in digits)
                 {
-                    Processing.ProcessAll(digit);
+                    Processing.ProcessAll(digit, i);
                     processedWriter.WriteLine(Processing.Attributes.ToString());
+                    i++;
                 }
             }
-            //Display(0);
+            Display(0);
         }
 
         private void Display(int index)
@@ -121,13 +123,13 @@ namespace DigitViewer
                     else pb.Update();
                 }
             }
-            FillLabels(digit);
+            FillLabels(digit, index);
             Holder.Update();
         }
 
-        private void FillLabels(Digit digit)
+        private void FillLabels(Digit digit, int i)
         {
-            Processing.ProcessAll(digit);
+            Processing.ProcessAll(digit, i);
             MinMaxX.Text = "Min X: " + Processing.Attributes.MinX + " Max X: " + Processing.Attributes.MaxX;
             MinMaxY.Text = "Min Y: " + Processing.Attributes.MinY + " Max Y: " + Processing.Attributes.MaxY;
             NorthLabel.Text = Processing.Attributes.North.ToString();
