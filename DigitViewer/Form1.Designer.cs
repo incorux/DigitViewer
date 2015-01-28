@@ -40,6 +40,13 @@
             this.SouthLabel = new System.Windows.Forms.Label();
             this.Euler4Label = new System.Windows.Forms.Label();
             this.Euler8Label = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.HorizontalsVal = new System.Windows.Forms.Label();
+            this.VerticalsVal = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.TotalIntersectionsVal = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -157,11 +164,79 @@
             this.Euler8Label.TabIndex = 11;
             this.Euler8Label.Text = "Euler8";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(569, 222);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(119, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Horizontal intersections:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(569, 244);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(107, 13);
+            this.label2.TabIndex = 13;
+            this.label2.Text = "Vertical intersections:";
+            // 
+            // HorizontalsVal
+            // 
+            this.HorizontalsVal.AutoSize = true;
+            this.HorizontalsVal.Location = new System.Drawing.Point(686, 222);
+            this.HorizontalsVal.Name = "HorizontalsVal";
+            this.HorizontalsVal.Size = new System.Drawing.Size(13, 13);
+            this.HorizontalsVal.TabIndex = 14;
+            this.HorizontalsVal.Text = "0";
+            // 
+            // VerticalsVal
+            // 
+            this.VerticalsVal.AutoSize = true;
+            this.VerticalsVal.Location = new System.Drawing.Point(686, 244);
+            this.VerticalsVal.Name = "VerticalsVal";
+            this.VerticalsVal.Size = new System.Drawing.Size(13, 13);
+            this.VerticalsVal.TabIndex = 15;
+            this.VerticalsVal.Text = "0";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(572, 270);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(96, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Total intersections:";
+            // 
+            // TotalIntersectionsVal
+            // 
+            this.TotalIntersectionsVal.AutoSize = true;
+            this.TotalIntersectionsVal.Location = new System.Drawing.Point(686, 270);
+            this.TotalIntersectionsVal.Name = "TotalIntersectionsVal";
+            this.TotalIntersectionsVal.Size = new System.Drawing.Size(13, 13);
+            this.TotalIntersectionsVal.TabIndex = 17;
+            this.TotalIntersectionsVal.Text = "0";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(575, 342);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(124, 23);
+            this.progressBar1.TabIndex = 18;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(711, 566);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.TotalIntersectionsVal);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.VerticalsVal);
+            this.Controls.Add(this.HorizontalsVal);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.Euler8Label);
             this.Controls.Add(this.Euler4Label);
             this.Controls.Add(this.SouthLabel);
@@ -196,6 +271,13 @@
         private System.Windows.Forms.Label SouthLabel;
         private System.Windows.Forms.Label Euler4Label;
         private System.Windows.Forms.Label Euler8Label;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label HorizontalsVal;
+        private System.Windows.Forms.Label VerticalsVal;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label TotalIntersectionsVal;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

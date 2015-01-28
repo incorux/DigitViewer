@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using MLP_approximation;
 
@@ -77,7 +78,16 @@ namespace DigitViewer
             string pixelFile = openFileDialogTrain.FileName;
             string labelFile = Path.GetDirectoryName(pixelFile) + @"\train-labels.idx1-ubyte";
             trainImages = LoadMnistData(pixelFile, labelFile);
-            Display(0);
+
+            using (TextWriter processedWriter = new StreamWriter(Directory.GetCurrentDirectory() + @"\\processedData.csv"))
+            {
+                foreach (var digit in digits)
+                {
+                    Processing.ProcessAll(digit);
+                    processedWriter.WriteLine(Processing.Attributes.ToString());
+                }
+            }
+            //Display(0);
         }
 
         private void Display(int index)
@@ -99,12 +109,12 @@ namespace DigitViewer
                 {
                     var pb = justMade
                         ? new PictureBox
-                          {
-                              Width = size,
-                              Height = size
-                          }
+                        {
+                            Width = size,
+                            Height = size
+                        }
                         : Holder.Controls[j * 28 + i];
-                    if(justMade) pb.MouseHover += pb_MouseHover;
+                    if (justMade) pb.MouseHover += pb_MouseHover;
 
                     pb.BackColor = digit.pixels[i, j] ? Color.Black : Color.White;
                     if (justMade) Holder.Controls.Add(pb, j, i);
@@ -126,6 +136,17 @@ namespace DigitViewer
             WestLabel.Text = Processing.Attributes.West.ToString();
             Euler4Label.Text = Processing.Attributes.Euler4.ToString();
             Euler8Label.Text = Processing.Attributes.Euler8.ToString();
+            HorizontalsVal.Text = Processing.Attributes.HorizontalIntersections.ToString();
+            VerticalsVal.Text = Processing.Attributes.VerticalIntersections.ToString();
+            TotalIntersectionsVal.Text = Processing.Attributes.TotalIntersections.ToString();
+            ColorVerticesHoriz(Processing.Attributes.Horizontal1, Color.Red);
+            ColorVerticesHoriz(Processing.Attributes.Horizontal2, Color.Blue);
+            ColorVerticesVert(Processing.Attributes.Vertical1, Color.Plum);
+            ColorVerticesVert(Processing.Attributes.Vertical2, Color.SaddleBrown);
+            ColorVerticesMDia(Processing.Attributes.MainDiagonal1, Color.SlateBlue);
+            ColorVerticesMDia2(Processing.Attributes.MainDiagonal2, Color.Tomato);
+            ColorVerticesDia(Processing.Attributes.Diagonal1, Color.LimeGreen);
+            ColorVerticesDia(Processing.Attributes.Diagonal2, Color.Indigo);
         }
 
         void pb_MouseHover(object sender, EventArgs eventArgs)
@@ -141,6 +162,47 @@ namespace DigitViewer
         {
             var control = (NumericUpDown)sender;
             Display((int)control.Value);
+        }
+        private void ColorVerticesHoriz(Line line, Color color)
+        {
+            for (int i = line.start.Y; i <= line.end.Y; i++)
+            {
+                Holder.Controls[i * 28 + line.start.X].BackColor = color;
+            }
+        }
+        private void ColorVerticesVert(Line line, Color color)
+        {
+            for (int i = line.start.X; i <= line.end.X; i++)
+            {
+                Holder.Controls[line.start.Y * 28 + i].BackColor = color;
+            }
+        }
+        private void ColorVerticesMDia(Line line, Color color)
+        {
+            int j = line.start.Y;
+            for (int i = line.start.X; i <= line.end.X; i++)
+            {
+                j--;
+                Holder.Controls[j * 28 + i].BackColor = color;
+            }
+        }
+        private void ColorVerticesMDia2(Line line, Color color)
+        {
+            int j = line.start.Y;
+            for (int i = line.start.X; i >= line.end.X; i--)
+            {
+                j++;
+                Holder.Controls[j * 28 + i].BackColor = color;
+            }
+        }
+        private void ColorVerticesDia(Line line, Color color)
+        {
+            int j = line.start.Y;
+            for (int i = line.start.X; i >= line.end.X; i--)
+            {
+                j--;
+                Holder.Controls[j * 28 + i].BackColor = color;
+            }
         }
     }
 

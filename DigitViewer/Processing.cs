@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace DigitViewer
 {
@@ -16,6 +16,8 @@ namespace DigitViewer
             Extremes(digit);
             DistanceVariable(digit);
             Euler(digit);
+            Intersections(digit);
+            Lines(digit);
         }
         /// <summary>
         /// Finds minimal x,y and maximum x,y
@@ -133,6 +135,60 @@ namespace DigitViewer
             Attributes.East = eastPoint;
         }
         #endregion
+        #region Intersection
+        public static void Intersections(Digit digit)
+        {
+            //if ((i + 4) % 7 == 0)
+            // horizontal intersections
+            int horizontals = 0;
+            int tmp = 0;
+            for (int y = 0; y < 28; y++)
+            {
+                if ((y + 4) % 7 != 0) continue;
+                for (int x = 1; x < 28; x++)
+                {
+                    if (!digit.pixels[y, x - 1] && digit.pixels[y, x])
+                    {
+                        tmp = 1;
+                    }
+                    else if (digit.pixels[y, x])
+                    {
+                        tmp++;
+                    }
+                    else if (tmp < 10 && tmp != 0)
+                    {
+                        horizontals++;
+                        tmp = 0;
+                    }
+                }
+            }
+
+            // vertical intersections
+            int verticals = 0;
+            for (int x = 0; x < 28; x++)
+            {
+                if ((x + 4) % 7 != 0) continue;
+                for (int y = 1; y < 28; y++)
+                {
+                    if (!digit.pixels[y - 1, x] && digit.pixels[y, x])
+                    {
+                        tmp = 1;
+                    }
+                    else if (digit.pixels[y, x])
+                    {
+                        tmp++;
+                    }
+                    else if (tmp < 10 && tmp != 0)
+                    {
+                        verticals++;
+                        tmp = 0;
+                    }
+                }
+            }
+            Attributes.HorizontalIntersections = horizontals;
+            Attributes.VerticalIntersections = verticals;
+        }
+        #endregion
         #region DistanceVariable
         public static void DistanceVariable(Digit digit)
         {
@@ -223,12 +279,12 @@ namespace DigitViewer
                 }
             }
             #endregion
-            var TopLeftToBotRight = Math.Sqrt(Math.Pow(topLeft.X - botRight.X, 2) + Math.Pow(topLeft.Y - botRight.Y, 2));
+            var topLeftToBotRight = (int)(Math.Sqrt(Math.Pow(topLeft.X - botRight.X, 2) + Math.Pow(topLeft.Y - botRight.Y, 2)));
 
-            var TopRightToBotLeft = Math.Sqrt(Math.Pow(topRight.X - botLeft.X, 2) + Math.Pow(topRight.Y - botLeft.Y, 2));
+            var topRightToBotLeft = (int)(Math.Sqrt(Math.Pow(topRight.X - botLeft.X, 2) + Math.Pow(topRight.Y - botLeft.Y, 2)));
 
-            Attributes.TopLeftToBotRight = TopLeftToBotRight;
-            Attributes.TopRightToBotLeft = TopRightToBotLeft;
+            Attributes.TopLeftToBotRight = topLeftToBotRight;
+            Attributes.TopRightToBotLeft = topRightToBotLeft;
         }
         #endregion
         #region Euler
@@ -403,6 +459,268 @@ namespace DigitViewer
             for (int i = 0; i < columns; ++i)
                 array[i] = matrix[row, i];
             return array;
+        }
+        #endregion
+        #region Lines
+        public static void Lines(Digit digit)
+        {
+            // Horizontals
+            Attributes.Horizontal1 = TraverseHoriz1(digit);
+            Attributes.Horizontal2 = TraverseHoriz2(digit);
+            // Verticals
+            Attributes.Vertical1 = TraverseVert1(digit);
+            Attributes.Vertical2 = TraverseVert2(digit);
+            // Main diagonal
+            Attributes.MainDiagonal1 = TraverseMainDiag1(digit);
+            Attributes.MainDiagonal2 = TraverseMainDiag2(digit);
+            // Other diagonal
+            Attributes.Diagonal1 = TraverseDiag1(digit);
+            Attributes.Diagonal2 = TraverseDiag2(digit);
+        }
+
+        private static Line ReplaceIfLonger(int currL, Point newS, Point newE, int newL)
+        {
+            if (newL <= currL) return null;
+            var l = new Line
+            {
+                start = new Point(newS.X, newS.Y),
+                end = new Point(newE.X, newE.Y),
+                length = newL
+            };
+            return l;
+        }
+
+        private static Line TraverseHoriz1(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var j = 0;
+            var pixels = digit.pixels;
+            for (var i = 0; i < 14; i++)
+            {
+                for (j = 0; j < 28; j++)
+                {
+                    if (!pixels[i, j])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(i, j - 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(i, j);
+                        currLength++;
+                    }
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(i, j - 1), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseHoriz2(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var j = 0;
+            var pixels = digit.pixels;
+            for (var i = 14; i < 28; i++)
+            {
+                for (j = 0; j < 28; j++)
+                {
+                    if (!pixels[i, j])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(i, j - 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(i, j);
+                        currLength++;
+                    }
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(i, j - 1), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseVert1(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var j = 0;
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                for (j = 0; j < 14; j++)
+                {
+                    if (!pixels[j, i])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(j - 1, i), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(j, i);
+                        currLength++;
+                    }
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(j - 1, i), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseVert2(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var j = 0;
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                for (j = 14; j < 28; j++)
+                {
+                    if (!pixels[j, i])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(j - 1, i), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(j, i);
+                        currLength++;
+                    }
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(j - 1, i), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseMainDiag1(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                var x = i;
+                var y = 0;
+                while (x >= 0 && y >= 0 && x < 28 && y < 28)
+                {
+                    if (!pixels[y, x])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(y - 1, x + 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(y, x);
+                        currLength++;
+                    }
+
+                    y++;
+                    x--;
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(y - 1, x + 1), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseMainDiag2(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                var x = i;
+                var y = 27;
+                while (x >= 0 && y >= 0 && x < 28 && y < 28)
+                {
+                    if (!pixels[y, x])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x - 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(y, x);
+                        currLength++;
+                    }
+
+                    y--;
+                    x++;
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x - 1), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseDiag1(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                var x = i;
+                var y = 27;
+                while (x >= 0 && y >= 0 && x < 28 && y < 28)
+                {
+                    if (!pixels[y, x])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x + 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(y, x);
+                        currLength++;
+                    }
+
+                    y--;
+                    x--;
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x + 1), currLength) ?? line;
+            }
+            return line;
+        }
+        private static Line TraverseDiag2(Digit digit)
+        {
+            var line = new Line();
+            var currLength = 0;
+            var start1 = new Point();
+            var pixels = digit.pixels;
+            for (var i = 0; i < 28; i++)
+            {
+                var x = 27;
+                var y = i;
+                while (x >= 0 && y >= 0 && x < 28 && y < 28)
+                {
+                    if (!pixels[y, x])
+                    {
+                        line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x + 1), currLength) ?? line;
+                        currLength = 0;
+                    }
+                    else
+                    {
+                        if (currLength == 0)
+                            start1 = new Point(y, x);
+                        currLength++;
+                    }
+
+                    y--;
+                    x--;
+                }
+                line = ReplaceIfLonger(line.length, start1, new Point(y + 1, x + 1), currLength) ?? line;
+            }
+            return line;
         }
         #endregion
     }
